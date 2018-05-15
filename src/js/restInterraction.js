@@ -51,15 +51,20 @@ export default class RestInterraction {
                                                 enemies: data.enemies
                                             };
                                             
-
-                    render.profilePage(profileContext, rightContSelector, userListContext);
-                    
-
+                    // const promise = new Promise((resolve, reject) => {
+                    //     render.profilePage(profileContext);
+                    //     resolve();
+                    // });
+                    // promise.then(() => {
+                    //     console.log(rightContSelector, userListContext);
+                    //     render.userList(rightContSelector, userListContext);
+                    // });
+                    render.profilePage(profileContext);
                     _this.getUserPosts(data.profile.user_id, wallContainerSelector);
                     
                     setTimeout(() => {
-                        render.userList(rightContSelector, userListContext);
-                    }, 200);    
+                       render.userList(rightContSelector, userListContext);
+                    }, 300);    
                 }
             });
         } else {
@@ -91,6 +96,31 @@ export default class RestInterraction {
         }
     };  //PROFILE SETTINGS
 
+    showYourNews(wallContSelector){
+        const functions = new Functions();
+        const render = new Render();
+
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+
+            $.ajax({
+                url: `http://restapi.fintegro.com/news`, 
+                method: `GET`,
+                dataType: `json`, 
+                headers: {
+                    bearer: sessionToken
+                },
+
+                success: data => {
+                    console.log(data);
+                    render.newsPage(wallContSelector, data);
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        }
+    };//SHOW YOUR NEWS
+
     showUsersProfile(userId, wallContainerSelector, rightContSelector){
         const functions = new Functions();
         const render = new Render();
@@ -109,7 +139,7 @@ export default class RestInterraction {
 
                 success: (data) => {
                     const year = new Date();
-                    const context = {
+                    const profileContext = {
                         profile: data.profile,
                         
                         friendsCount: data.friends_count,
@@ -122,10 +152,12 @@ export default class RestInterraction {
                         enemies: data.enemies,
                         btnStatus: `hidden`
                     };
-                    render.profilePage(context, rightContSelector, userListContext);
+
+                    render.profilePage(profileContext);
+                    
                     setTimeout(() => {
-                        render.userList(rightContSelector, userListContext);
-                    }, 200);   
+                      render.userList(rightContSelector, userListContext);
+                    }, 300);   
                     _this.getUserPosts(userId, wallContainerSelector);
                 }
             });
@@ -636,7 +668,6 @@ export default class RestInterraction {
                     } else {
                         context = data;
                     };
-                    console.log(context);
                     render.userPosts(context, wallContainerSelector);
                 }
             });
@@ -645,59 +676,85 @@ export default class RestInterraction {
         };
     }; //GET USER POSTS
 
-    albumsList(albums){
-        let albumsUL = document.createElement(`ul`);
-        let albumLI;
-        $(albumsUL).addClass();
+    
 
-        for(var i = 0; i < albums.length; i++) {
-            albumLI = document.createElement(`li`);
-            $(albumLI).addClass(`wrapper__profileSettings__tabs__content__albums__list__item`);
-            $(albumLI).attr(`id`, albums[i].id);
-            $(albumLI).append(`<div class="wrapper__profileSettings__tabs__content__albums__list__item__image"></div>`);
-            $(albumLI).append(`<a class="wrapper__profileSettings__tabs__content__albums__list__item__name" href="#" name="albumName">${albums[i].name}</a>`);
-            $(albumLI).append(`<a class="wrapper__profileSettings__tabs__content__albums__list__item__delete" href="#" name="deleteAlbum">Delete album</a>`);
-            $(albumLI).append(`<p class="wrapper__profileSettings__tabs__content__albums__list__item__date">Created: ${albums[i].created}</p>`);
+    addCommentToPost(text, postId, wallContainerSelector){
+        const functions = new Functions();
 
-            $(albumsUL).append(albumLI);
-        }
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+            
+            $.ajax({
+                url: `http://restapi.fintegro.com/comments`, 
+                method: `POST`,
+                dataType: `json`,
+                data: {
+                    text: text,
+                    post_id: postId
+                },
+                
+                headers: {
+                    bearer: sessionToken
+                },
 
-        $(`.wrapper__profileSettings__tabs__content__albums`).html(albumsUL).addClass(`filled`);   
-    }; //ALBUMS LIST
+                success: data => {
+                    this.getUserPosts(localStorage.userId, wallContainerSelector);
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        };
+    }; //ADD COMMENT TO POST
 
-    getAlbums(){
-        let functions = new Functions(),
-            template,
-            sessionToken = functions.isSessionToken(),
-            _this = this;
+    removePostComment(commentId, wallContainerSelector){
+        const functions = new Functions();
 
-        if(!sessionToken) {
-            this.init();
-            return false;
-        }
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+            
+            $.ajax({
+                url: `http://restapi.fintegro.com/comments/${commentId}`, 
+                method: `DELETE`,
+                dataType: `json`,
+                
+                headers: {
+                    bearer: sessionToken
+                },
 
-        $.ajax({
-            url: `http://restapi.fintegro.com/albums`,
-            data: {
-                user_id: localStorage.userID
-            },
-            method: `GET`,
-            headers: {
-                bearer: sessionToken
-            },
-            success: function (response) {
-                $.get(`./src/views/albums.hbs`, function(response){
-                    template = Handlebars.compile(response);
-                    $(_this.wrapper()).find(`[name="albumsContainer"]`).html(template);
-                });
+                success: data => {
+                    this.getUserPosts(localStorage.userId, wallContainerSelector);
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        };
+    }; //REMOVE POST COMMENT
 
-                setTimeout(function () {
-                    if(response.albums.length > 0) {
-                        _this.albumsList(response.albums);
-                    }
-                }, 100);
-            }
-        });
+    getAlbums(contSelector){
+        const functions = new Functions();
+        const render = new Render();
+
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+            
+            $.ajax({
+                url: `http://restapi.fintegro.com/albums`, 
+                method: `GET`,
+                dataType: `json`,
+                
+                headers: {
+                    bearer: sessionToken
+                },
+
+                success: data => {
+                    console.log(data);
+                    render.albums(contSelector, data);
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        };
+        
     }; //GET ALBUMS
 
 

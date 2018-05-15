@@ -66,6 +66,24 @@ import Render from './render.js';
         currentRestInterraction.profileSettings(`.content`);
     }); //SETTINGS LINK CLICK
 
+    $(`body`).on(`click`, `[name="showNews"]`, e => {
+        e.preventDefault();
+        const newsContainer = `.wall`
+        if($(`div`).is(newsContainer)) {
+            currentRestInterraction.showYourNews(newsContainer);
+        } else {
+            const promise = new Promise((resolve, reject) => {
+                currentRestInterraction.init(`.posts`, `.right`);
+                resolve();
+            });
+            promise.then(() => {
+                console.log('resolved');
+                currentRestInterraction.showYourNews(newsContainer);
+            });   
+        };
+        
+    }); //SETTINGS LINK CLICK
+    
     $(`body`).on(`click`, `[name=logout]`, e => {
         e.preventDefault();
         currentRestInterraction.logout();
@@ -135,10 +153,31 @@ import Render from './render.js';
         currentRestInterraction.deleteUserFromList(userInfo.userId, userInfo.userName, `.right`);
     }); //DELETE USER FROM LIST CLICK
     
+    $(`body`).on(`click`, `[name="showCommentBlock"]`, function(e) {
+        e.preventDefault();
+        functions.showCommentBlock(this);
+    }); //SHOW COMMENT BLOCK LINK CLICK
+
+    $(`body`).on(`click`, `[name="removeCommentBlock"]`, function(e) {
+        e.preventDefault();
+        functions.removeCommentBlock(this);
+    }); //REMOVE COMMENT BLOCK LINK CLICK
+
+
     $(`body`).on(`click`, `[name="commentPost"]`, function(e) {
         e.preventDefault();
+        const text = $(this).prev().val();
+        const postId = $(this).parent().next().data(`id`);
+        if(text) {
+            currentRestInterraction.addCommentToPost(text, postId, `.posts`);
+        };
+    }); //COMMENT BUTTON CLICK
 
-    }); //COMMENT POST LINK CLICK
+    $(`body`).on(`click`, `[name="deleteComment"]`, function(e) {
+        e.preventDefault();
+        const commentId = $(this).data(`id`);
+        currentRestInterraction.removePostComment(commentId, `.posts`);
+    }); //COMMENT BUTTON CLICK
 
     $(`body`).on(`click`, `[name="removePost"]`, function(e) {
         e.preventDefault();
@@ -191,7 +230,7 @@ import Render from './render.js';
 
     $(`body`).on(`click`, `[name="albumsList"]`, e => {
         e.preventDefault();
-        currentRestInterraction.getAlbums();
+        currentRestInterraction.getAlbums(`[name="albumsContainer"]`);
     });
 
     $(`body`).on(`click`, `#createAlbum`, e => {

@@ -1,0 +1,71 @@
+<p class="results-title">Your news:</p>
+{{#each news}}
+    {{#if this.post}}
+        <div class="posts border-top-item">
+            <div class="posts-item no-border-item">
+                <div class="info">
+                    <div class="user-info">
+                        <div class="photo-wrapper">
+                            <img class="user-photo" src="{{#if this.post.0.user.photo}}{{this.post.0.user.photo}}{{else}}img/default-user.jpg{{/if}}" alt="UserPhoto">
+                        </div>
+                        <a class="post-username" href="#">
+                            {{#if this.post.0.user.firstname}}{{this.post.0.user.firstname}}{{else}}Firstname{{/if}} 
+                            {{#if this.post.0.user.lastname}}{{this.post.0.user.lastname}}{{else}}Lastname{{/if}}
+                        </a>
+                    </div>
+                    <p class="post-date">{{this.post.0.date}}</p>
+                </div>
+                <div class="post-content">
+                    <p class="text">{{this.post.0.text}}</p>
+                    <div class="media">
+                        {{#each this.post.0.mediaList}}
+                            <img class="media-img" src="{{this.url}}" alt="post_photo">
+                        {{/each}}
+                    </div>
+                </div>
+        
+                <div class="post-comments">
+                    {{#each this.post.0.comments}}
+                    <div class="comment">
+                        <div class="content">
+                            <div class="user">
+                                <div class="photo-wrapper">
+                                    <img src="{{#if this.user.photo}}{{this.user.photo}}{{else}}img/default-user.jpg{{/if}}" alt="user-photo" class="user-photo">
+                                </div>
+                                <div class="user-info">
+                                    <a href="#" class="username" data-id="{{this.user.id}}">
+                                        {{#if this.user.firstname}}{{this.user.firstname}}{{else}}Firstname{{/if}} 
+                                        {{#if this.user.lastname}}{{this.user.lastname}}{{else}}Lastname{{/if}}
+                                    </a>
+                                    <p class="comment-date">{{this.date}}</p>
+                                </div> 
+                            </div>    
+                            <p class="text">{{this.text}}</p>
+                        </div>  
+                    </div>
+                    {{/each}}
+                </div> 
+            </div>
+        </div>  
+    {{else}}
+        <p class="news-follow">You followed:</p>
+        <div class="search-results">
+            <div class="results-item">
+                <img class="user-bg" src="img/followed-bg.jpg" alt="followed-bg">
+                <div class="photo-wrapper">
+                    <img class="user-photo" src="{{#if this.relation.photo}}{{this.relation.photo}}{{else}}img/default-user.jpg{{/if}}" alt="profile_Photo">
+                </div>
+                <div class="user-info">
+                    <a class="username" href="#" data-id="{{this.relation.user_id}}" name="friendName">
+                        {{#if this.relation.firstname}}{{this.relation.firstname}}{{else}}Firstname{{/if}}
+                        {{#if this.relation.lastname}}{{this.relation.lastname}}{{else}}Lastname{{/if}}
+                    </a>
+                    <p class="user-quote">{{this.relation.quote}}</p>
+                </div>
+            </div>
+        </div>
+        <p class="news-data">{{this.date}}</p>
+    {{/if}}
+{{else}}
+    <p>No news...</p>
+{{/each}}

@@ -7,7 +7,10 @@
                 <img class="user-photo" src="{{#if this.photo}}{{this.photo}}{{else}}img/default-user.jpg{{/if}}" alt="profile_Photo">
             </div>
             <div class="user-info">
-                <a class="username" href="#" data-id="{{this.user_id}}" name="friendName">{{this.firstname}} {{this.lastname}}</a>
+                <a class="username" href="#" data-id="{{this.user_id}}" name="friendName">
+                    {{#if this.firstname}}{{this.firstname}}{{else}}Firstname{{/if}} 
+                    {{#if this.lastname}}{{this.lastname}}{{else}}Lastname{{/if}}
+                </a>
                 <p class="user-quote">{{this.quote}}</p>
             </div>
             <div class="buttons" data-id="{{this.user_id}}">

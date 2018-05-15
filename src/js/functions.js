@@ -65,4 +65,21 @@ export default class Functions {
         };
         return(userInfo);
     }; //GET USER ID AND NAME
+
+    showCommentBlock(linkSelector){
+        $(linkSelector).parent().before(`
+        <div class="input-wrapper">
+            <input class="comment-input" name="postText" type="text" placeholder="Comment">
+            <button class="comment-btn" name="commentPost">
+                <i class="fa fa-comment" aria-hidden="true"></i>
+            </button>
+        </div>`);
+        $(linkSelector).attr(`name`, `removeCommentBlock`).text(`Hide comment field`);
+    };//SHOW COMMENT BLOCK
+
+    removeCommentBlock(linkSelector) {
+        $(linkSelector).parent().prev().remove();
+        $(linkSelector).attr(`name`, `showCommentBlock`).text(`Comment`);
+    };//REMOVE COMMENT BLOCK
 };
+

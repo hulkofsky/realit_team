@@ -21,26 +21,30 @@
         </div>
     </div>
     <div class="post-links" data-id="{{this.id}}">
-        <a  class="link {{@root.linkStatus}}" href="#" name="commentPost">Comment</a>
+        <a  class="link {{@root.linkStatus}}" href="#" name="showCommentBlock">Comment</a>
         <a  class="link {{@root.linkStatus}}" href="#" name="removePost" >Remove post</a>
     </div>
     <div class="post-comments">
         {{#each comments}}
         <div class="comment">
-            <div class="user">
-                <div class="photo-wrapper">
-                    <img src="{{#if this.user.photo}}{{this.user.photo}}{{else}}img/default-user.jpg{{/if}}" alt="user-photo" class="user-photo">
-                </div>
-                <div class="user-info">
-                    <a href="#" class="username" data-id="{{this.user.id}}">
-                        {{#if this.user.firstname}}{{this.user.firstname}}{{else}}Firstname{{/if}} 
-                        {{#if this.user.lastname}}{{this.user.lastname}}{{else}}Lastname{{/if}}
-                    </a>
-                    <p class="comment-date" data-id={{this.id}}>{{this.date}}</p>
-                </div> 
+            <div class="content">
+                <div class="user">
+                    <div class="photo-wrapper">
+                        <img src="{{#if this.user.photo}}{{this.user.photo}}{{else}}img/default-user.jpg{{/if}}" alt="user-photo" class="user-photo">
+                    </div>
+                    <div class="user-info">
+                        <a href="#" class="username" data-id="{{this.user.id}}">
+                            {{#if this.user.firstname}}{{this.user.firstname}}{{else}}Firstname{{/if}} 
+                            {{#if this.user.lastname}}{{this.user.lastname}}{{else}}Lastname{{/if}}
+                        </a>
+                        <p class="comment-date">{{this.date}}</p>
+                    </div> 
+                </div>    
+                <p class="text">{{this.text}}</p>
             </div>
-            
-            <p class="text">{{this.text}}</p>
+            <div class="link">
+                <a class="remove-comment" href="#" name="deleteComment" data-id="{{this.id}}">Delete comment</a>
+            </div>    
         </div>
         {{/each}}
     </div>

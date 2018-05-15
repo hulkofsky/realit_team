@@ -23,27 +23,12 @@ export default class Render{
         this.loadTemplate(`./src/views/login.hbs`, this.wrapper());
     };//LOGIN PAGE
 
-    profilePage(profileContext, rightContSelector, userListContext){
-
+    profilePage(profileContext){
         this.loadTemplate(`./src/views/profile.hbs`, this.wrapper(), profileContext);
-        // let promise = new Promise((resolve, reject) => {
-        //     if(profileContext) {
-        //         this.loadTemplate(`./src/views/profile.hbs`, this.wrapper(), profileContext);
-        //         resolve();
-        //     } else {
-        //         reject();
-        //     }; 
-        // }); 
-        // promise.then(resolve => {
-        //     console.log(`resolved`);
-        //     this.userList(rightContSelector, userListContext);
-        // },
-        // reject => {console.log(`rejected`)});
-        
     };//PROFILE PAGE
 
     userList(contSelector, context) {
-        console.log($(`.right`).html());
+        console.log(contSelector, context);
         const container = $(contSelector);
         this.loadTemplate(`./src/views/rightUserList.hbs`, container, context); 
     }; //USER LIST
@@ -77,6 +62,17 @@ export default class Render{
         this.loadTemplate(`./src/views/profileSettings.hbs`, container, context);  
     };//PROFILE SETTINGS
 
+    albums(containerSelector, context){
+        const container = $(containerSelector);
+
+        this.loadTemplate(`./src/views/albums.hbs`, container, context);
+    };//ALBUMS
+
+    newsPage(containerSelector, context){
+        const container = $(containerSelector);
+
+        this.loadTemplate(`./src/views/news.hbs`, container, context);
+    };//NEWS PAGE
     searchResults(containerSelector, context){
         const container = $(containerSelector);
 
