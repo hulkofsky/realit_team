@@ -37,7 +37,7 @@ export default class RestInterraction {
                     bearer: sessionToken
                 },
 
-                success: (data) => {
+                success: data => {
                     const year = new Date();
                     const profileContext = {
                         profile: data.profile,
@@ -50,17 +50,9 @@ export default class RestInterraction {
                                                 friends: data.friends,
                                                 enemies: data.enemies
                                             };
-                                            
-                    // const promise = new Promise((resolve, reject) => {
-                    //     render.profilePage(profileContext);
-                    //     resolve();
-                    // });
-                    // promise.then(() => {
-                    //     console.log(rightContSelector, userListContext);
-                    //     render.userList(rightContSelector, userListContext);
-                    // });
+
                     render.profilePage(profileContext);
-                    _this.getUserPosts(data.profile.user_id, wallContainerSelector);
+                    this.getUserPosts(data.profile.user_id, wallContainerSelector);
                     
                     setTimeout(() => {
                        render.userList(rightContSelector, userListContext);
@@ -757,118 +749,138 @@ export default class RestInterraction {
         
     }; //GET ALBUMS
 
+    createAlbum(albumName){
+        const functions = new Functions();
 
-    addAlbum(){
-        let functions = new Functions(),
-            sessionToken = functions.isSessionToken(),
-            _this = this;
-        $.ajax({
-            url: `http://restapi.fintegro.com/albums`,
-            method: `POST`,
-            headers: {
-                bearer: sessionToken
-            },
-            data: {name: $(`[name="createAlbum"]`).val()},
-            success: function (response) {
-                _this.getAlbums();
-            }
-        });
-    }; //ADD ALBUM
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+            
+            $.ajax({
+                url: `http://restapi.fintegro.com/albums`, 
+                method: `POST`,
+                dataType: `json`,
+                
+                headers: {
+                    bearer: sessionToken
+                },
+
+                data: {
+                    name: albumName
+                },
+
+                success: data => {
+                    functions.showModal(`successModal`, this.wrapper(), `Album "${albumName}" succesfully created!`);
+                    setTimeout(() => {
+                        functions.deleteModal(`successModal`);
+                    }, 2000);   
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        };
+    }; //CREATE ALBUM
  
-    openAlbum(albumID){
-        let functions = new Functions(),
-            _this = this;
-        $.ajax({
-            url: `http://restapi.fintegro.com/albums/${albumID}`,
-            method: `GET`,
-            headers: {
-                bearer: functions.isSessionToken()
-            },
-            success: function (response) {
+    openAlbum(albumId, photoContSelector){
+        const functions = new Functions();
+        const render = new Render();
 
-                $.get(`views/photos.hbs`, function(response){
-                    template = Handlebars.compile(response);
-                    template = template(response.album[0]);
-                    $(_this.wrapper).find(`[name="albumsContainer"]`).html(template);
-                });
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+            
+            $.ajax({
+                url: `http://restapi.fintegro.com/albums/${albumId}`, 
+                method: `GET`,
+                dataType: `json`,
+                
+                headers: {
+                    bearer: sessionToken
+                },
 
-                setTimeout(function () {
-                    _this.photosList(response.album[0].photos);
-                }, 1000);
-            }
-        });
+                success: data => {
+                    render.photosPage(photoContSelector, data);
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        };
     }; //OPEN ALBUM
 
-    photosList(photos){
-        let photosUL = document.createElement(`ul`),
-            photoLI;
-        $(photosUL).addClass(`wrapper__profileSettings__tabs__content__photos__list`);
+    deleteAlbum(albumId, albumsContSelector){
+        const functions = new Functions();
+        const render = new Render();
 
-        for(let i = 0; i < photos.length; i++) {
-            photoLI = document.createElement(`li`);
-            $(albumLI).addClass(`wrapper__profileSettings__tabs__content__photos__list__item`);
-            $(photoLI).attr(`id`, photos[i].id);
-            $(photoLI).append(`<img class="wrapper__profileSettings__tabs__content__photos__list__item__img" src="${photos[i].url}" alt="photo">`);
-            $(photoLI).append(`<div class="wrapper__profileSettings__tabs__content__photos__list__item__delete" name="deletePhoto">Delete photo</div>`);
-            $(photoLI).append(`<p class="wrapper__profileSettings__tabs__content__photos__list__item__date">Created: ${photos[i].created}</p>`);
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+            
+            $.ajax({
+                url: `http://restapi.fintegro.com/albums/${albumId}`, 
+                method: `DELETE`,
+                dataType: `json`,
+                
+                headers: {
+                    bearer: sessionToken
+                },
 
-            $(photosUL).append(photoLI);
-        }
+                success: data => {
+                    this.getAlbums(albumsContSelector);  
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        };
+    };//DELETE ALBUM
 
-        $(`.wrapper__profileSettings__tabs__content__photos`).html(photosUL).addClass(`filled`);
-    }; //PHOTOS LIST
+    addPhotoToAlbum(albumId, URL, albumContSelector){
+        const functions = new Functions();
+        const render = new Render();
 
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+            
+            $.ajax({
+                url: `http://restapi.fintegro.com/photos`, 
+                method: `POST`,
+                dataType: `json`,
+                
+                headers: {
+                    bearer: sessionToken
+                },
 
-    addPhoto(allbumId){
-        let functions = new Functions(),
-            _this = this;
+                data: {
+                    album_id: albumId,
+                    url: URL
+                },
+                success: data => {
+                    this.openAlbum(albumId, albumContSelector);
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        };
+    };//ADD PHOTO TO ALBUM
 
-        $.ajax({
-            url: `http://restapi.fintegro.com/upload`,
-            method: `POST`,
-            headers: {
-                bearer: functions.isSessionToken()
-            },
-            data: formData,
-            crossDomain: true,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                $.ajax({
-                    url: `http://restapi.fintegro.com/photos`,
-                    method: `POST`,
-                    headers: {
-                        bearer: functions.isSessionToken()
-                    },
-                    data: {
-                            album_id: albumID,
-                            url: response.link
-                    },
-                    success: function (response) {
-                        _this.openAlbum($(`.album`).attr(`id`));
-                    }
-                });
-            }
-        });
-    }; //ADD PHOTO
+    deletePhotoFromAbum(photoId, albumId, contSelector){
+        const functions = new Functions();
+        const render = new Render();
 
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+            
+            $.ajax({
+                url: `http://restapi.fintegro.com/photos/${photoId}`, 
+                method: `DELETE`,
+                dataType: `json`,
+                
+                headers: {
+                    bearer: sessionToken
+                },
 
-    deleteAlbum(albumContainer){
-        let functions = new Functions(),
-            _this = this;
-
-        $.ajax({
-            url: `http://restapi.fintegro.com/albums/${albumContainer.attr(`id`)}`,
-            method: `DELETE`,
-            headers: {
-                bearer: functions.isSessionToken()
-            },
-            success: function () {
-                _this.getAlbums();
-            }
-        });
-    }; //DELETE ALBUM
-
-    
+                success: data => {
+                    this.openAlbum(albumId, contSelector);
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        };
+    };//DELETE PHOTO
 };

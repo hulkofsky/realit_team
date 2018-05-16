@@ -2,13 +2,12 @@
     {{#each albums}}
         <div class="album">
             <img class="album-img" src="{{#if this.photos.0.url}}{{this.photos.0.url}}{{else}}../img/no-image.png{{/if}}" alt="album-photo">
-            <div class="album-overlay">
-                <div class="album-links">
-                    <a href="#" class="album-link" name="albumOpen">Open</a>
-                    <a href="#" class="album-link" name="albumDelete">Delete</a>
-                </div>
+            <div class="album-overlay"></div>
+            <div class="album-links" data-id="{{this.id}}">
+                <a href="#" class="album-link" name="albumOpen">Open</a>
+                <a href="#" class="album-link" name="albumDelete">Delete</a>
             </div>
-             
+            <p class="album-name">{{this.name}}</p>     
         </div>
     {{else}}
         <p>No albums yet...</p>

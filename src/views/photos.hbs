@@ -1,10 +1,20 @@
-<div class="wrapper__profileSettings__tabs__content__title">
-    <p class="wrapper__profileSettings__tabs__content__title__albumname">Albumname</p>
-    <button class="wrapper__profileSettings__tabs__content__title__addphoto">Add Photo</button>
+<div class="form-wrapper">
+    <div class="album-title">{{album.0.name}}</div>
+    <input class="add-photo" name="UploadForm[imageFile]" id="addPhotoToAlbum" type="file">
+    <button class="button" name="addPhotoToAlbum" data-id="{{album.0.id}}">Add Photo</button>
 </div>
-    
-<div class="wrapper__profileSettings__tabs__content__photos">
-    
-    No photos yet!
-
+<div class="photos">
+    {{#each album.0.photos}}
+        <div class="photo-item">
+            <div class="photo-wrapper" name="photoSmall">
+                <img class="photo-img" src="{{#if this.url}}{{this.url}}{{else}}../img/no-image.png{{/if}}" alt="album-photo">
+            </div>
+            <div class="photo-info">
+                <p class="photo-data">{{this.created}}</p>
+                <a href="#" class="photo-link" data-id="{{this.id}}" name="deletePhoto">Delete</a>
+            </div>            
+        </div>
+    {{else}}
+        <p class="no-photos">No photos yet...</p>
+    {{/each}}
 </div>

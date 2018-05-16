@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import Handlebars from '../../node_modules/handlebars/dist/handlebars.min.js';
 import Functions from './functions.js';
+import { setTimeout } from 'timers';
 
 export default class Render{
     wrapper(){
@@ -28,9 +29,18 @@ export default class Render{
     };//PROFILE PAGE
 
     userList(contSelector, context) {
-        console.log(contSelector, context);
-        const container = $(contSelector);
-        this.loadTemplate(`./src/views/rightUserList.hbs`, container, context); 
+        $(contSelector).append(`<aside class="right"></aside>`)
+        const container = $(`.right`);
+        this.loadTemplate(`./src/views/rightUserList.hbs`, container, context);
+        console.log($(`aside`).is(contSelector), `without time`);
+        setTimeout(() =>{
+            console.log($(`aside`).is(contSelector));
+            
+            
+        }, 0);
+
+        
+         
     }; //USER LIST
 
     registerPage(){
@@ -64,9 +74,13 @@ export default class Render{
 
     albums(containerSelector, context){
         const container = $(containerSelector);
-
         this.loadTemplate(`./src/views/albums.hbs`, container, context);
     };//ALBUMS
+
+    photosPage(contSelector, context){
+        const container = $(contSelector);
+        this.loadTemplate(`./src/views/photos.hbs`, container, context);
+    };//PHOTOS PAGE
 
     newsPage(containerSelector, context){
         const container = $(containerSelector);

@@ -77,7 +77,6 @@ import Render from './render.js';
                 resolve();
             });
             promise.then(() => {
-                console.log('resolved');
                 currentRestInterraction.showYourNews(newsContainer);
             });   
         };
@@ -101,7 +100,7 @@ import Render from './render.js';
         $(`#addPhotoToPost`).trigger(`click`);
     }); //ADD PHOTO TO POST BUTTON CLICK
 
-    $(`body`).on(`change`, `[name="UploadForm[imageFile]"]`, e => {
+    $(`body`).on(`change`, `#addPhotoToPost`, e => {
         e.preventDefault();
         currentRestInterraction.addPhotoToPreview(`.post-form`, `[name="UploadForm[imageFile]"]`);
     }); //ADD PHOTO TO POST BUTTON CLICK
@@ -228,24 +227,59 @@ import Render from './render.js';
         currentRestInterraction.removeProfile();
     });// REMOVE PROFILE LINK CLICK
 
-    $(`body`).on(`click`, `[name="albumsList"]`, e => {
+    $(`body`).on(`click`, `[name="albumList"]`, e => {
         e.preventDefault();
         currentRestInterraction.getAlbums(`[name="albumsContainer"]`);
     });
 
-    $(`body`).on(`click`, `#createAlbum`, e => {
+    $(`body`).on(`click`, `[name="createAlbum"]`, e => {
         e.preventDefault();
-        currentRestInterraction.addAlbum();
-    });
+        const albumName = $(`[name="albumName"]`).val();
+        currentRestInterraction.createAlbum(albumName);
+    });//CREATE ALBUM BUTTON CLICK
 
-    $(`body`).on(`click`, `[name="albumName"]`, function(e) {
+    $(`body`).on(`click`, `[name="albumOpen"]`, function(e) {
         e.preventDefault();
-        currentRestInterraction.openAlbum($(this).closest(`li`).attr(`id`));
-    });
+        const albumId = $(this).parent().data(`id`);
+        currentRestInterraction.openAlbum(albumId, `[name="albumsContainer"]`);
+    });//ALBUM OPEN BUTTON CLICK
+    
+    $(`body`).on(`click`, `[name="addPhotoToAlbum"]`, e => {
+        e.preventDefault();
+        $(`#addPhotoToAlbum`).trigger(`click`);
+    });//ADD PHOTO TO ALBUM BUTTON CLICK
 
-    $(`body`).on(`click`, `[name="deleteAlbum"]`, function() {
-        currentRestInterraction.deleteAlbum($(this).parent());
-    });
+    $(`body`).on(`click`, `[name="albumDelete"]`, function(e) {
+        e.preventDefault();
+        const albumId = $(this).parent().data(`id`);
+        currentRestInterraction.deleteAlbum(albumId, `[name="albumsContainer"]`);
+    });//DELETE ALBUM LINK CLICK
+
+    $(`body`).on(`click`, `[name="photoSmall"]`, function() {
+        const photoURL = $(this).children(`img`).attr(`src`);
+        functions.showModal(`photoModal`, `.wrapper`, `<img src="${photoURL}" alt="photo-big">`);
+    });//PHOTO SMALL DIV CLICK
+
+    $(`body`).on(`click`, `.modalOverlay`, function(e) {
+        e.stopPropagation();
+        functions.deleteModal(`photoModal`);
+    });//MODAL OVERLAY CLICK
+    
+    $(`body`).on(`change`, `#addPhotoToAlbum`, e => {
+        e.preventDefault();
+        const albumId = $(`[name="addPhotoToAlbum"]`).data(`id`);
+
+        currentRestInterraction.uploadPhoto(`#addPhotoToAlbum`).then(photoURL => {
+            currentRestInterraction.addPhotoToAlbum(albumId, photoURL, `[name="albumsContainer"]`);
+        });    
+    });//ADD PHOTO TO ALBUM INPUT CHANGE CLICK
+
+    $(`body`).on(`click`, `[name="deletePhoto"]`, function(e) {
+        e.preventDefault();
+        const albumId = $(this).closest(`.tab-content`).find(`.button`).data(`id`);
+        const photoId = $(this).data(`id`);
+        currentRestInterraction.deletePhotoFromAbum(photoId, albumId, `[name="albumsContainer"]`);
+    });//DELETE PHOTO LINK CLICK
 
     // PROFILE SETTINGS TABS
     $(`body`).on(`click`, `.link:not(.active)`, function(e) {
