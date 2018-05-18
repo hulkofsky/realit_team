@@ -12,12 +12,16 @@ import Render from './render.js';
     const functions = new Functions();
     const render = new Render();
 
-    currentRestInterraction.init(`.posts`, `.right`);
+    const postsContSelector = `.posts`
+    const rigthContSelector = `.right`
+    const contentContSelector = `.content`
+
+    currentRestInterraction.init(postsContSelector, rigthContSelector);
 
     $(`body`).on(`click`, `[name=loginButton]`, e => {
         e.preventDefault();
         currentRestInterraction.login(`[name="username"]`, `[name="password"]`, `[name=loginButton]`,
-                                        `.footer-year`, `.posts`, `.right`);
+                                        `.footer-year`, postsContSelector, rigthContSelector);
     });//LOGIN BUTTON CLICK
 
     $(`body`).on(`click`, `[name=registerButton]`, () => {
@@ -56,14 +60,19 @@ import Render from './render.js';
     }); //RECOVER PASSWORD BUTTON CLICK
 
                                                     //PROFILE HBS
+    $(`body`).on(`click`, `.menu-button`, function(e) {
+        e.preventDefault();
+        $(this).parent().find(`ul`).toggleClass(`menu-open`);
+    }); //MY PROFILE LINK CLICK     
+
     $(`body`).on(`click`, `[name="myProfile"]`, e => {
         e.preventDefault();
-        currentRestInterraction.init(`.posts`, `.right`);
+        currentRestInterraction.init(postsContSelector, rigthContSelector);
     }); //MY PROFILE LINK CLICK     
     
     $(`body`).on(`click`, `[name=profileSettings]`, e => {
         e.preventDefault();
-        currentRestInterraction.profileSettings(`.content`);
+        currentRestInterraction.profileSettings(contentContSelector);
     }); //SETTINGS LINK CLICK
 
     $(`body`).on(`click`, `[name="showNews"]`, e => {
@@ -73,7 +82,7 @@ import Render from './render.js';
             currentRestInterraction.showYourNews(newsContainer);
         } else {
             const promise = new Promise((resolve, reject) => {
-                currentRestInterraction.init(`.posts`, `.right`);
+                currentRestInterraction.init(postsContSelector, rigthContSelector);
                 resolve();
             });
             promise.then(() => {
@@ -107,31 +116,36 @@ import Render from './render.js';
 
     $(`body`).on(`click`, `.remove-preview`, function(e) {
         e.preventDefault();
-        currentRestInterraction.removePhotoFromPreview(this);
+        const photoId = 0;
+        currentRestInterraction.deletePhotoFromPreview(photoId, this);
     }); //ADD PHOTO TO POST BUTTON CLICK
     
 
     $(`body`).on(`click`, `[name=sendPost]`, e => {
         e.preventDefault();
-        currentRestInterraction.createPost($(`[name="postText"]`).val(), `.photos-preview`, `.posts`);
+        const postText = $(`[name="postText"]`).val();
+
+        if(postText || $(`div`).is(`.photos-preview`)) {
+            currentRestInterraction.createPost(postText, `.photos-preview`, postsContSelector);
+        };   
     }); //SEND POST BUTTON CLICK
 
     $(`body`).on(`click`, `[name="friendName"]`, function(e) {
         e.preventDefault();
         const userId = $(this).data(`id`);
-        currentRestInterraction.showUsersProfile(userId, `.posts`, `.right`);
+        currentRestInterraction.showUsersProfile(userId, postsContSelector, rigthContSelector);
     }); //FRIEND NAME LINK CLICK
 
     $(`body`).on(`click`, `[name="userFollow"]`, function(e){
         e.preventDefault();
         const userInfo = functions.getUserIdAndName(this);
-        currentRestInterraction.addFriendOrEnemy(userInfo.userId, 1, userInfo.userName, `.right`);
+        currentRestInterraction.addFriendOrEnemy(userInfo.userId, 1, userInfo.userName, rigthContSelector);
     }); //FOLLOW BUTTON CLICK
 
     $(`body`).on(`click`, `[name="userBlock"]`, function(e){
         e.preventDefault();
         const userInfo = functions.getUserIdAndName(this);
-        currentRestInterraction.addFriendOrEnemy(userInfo.userId, 2, userInfo.userName, `.right`);
+        currentRestInterraction.addFriendOrEnemy(userInfo.userId, 2, userInfo.userName, rigthContSelector);
     }); //BLOCK BUTTON CLICK    
 
     $(`body`).on(`click`, `[name="viewFriends"]`, function(e){
@@ -149,7 +163,7 @@ import Render from './render.js';
     $(`body`).on(`click`, `[name="deleteUserFromList"]`, function(e){
         e.preventDefault();
         const userInfo = functions.getUserIdAndName(this);
-        currentRestInterraction.deleteUserFromList(userInfo.userId, userInfo.userName, `.right`);
+        currentRestInterraction.deleteUserFromList(userInfo.userId, userInfo.userName, rigthContSelector);
     }); //DELETE USER FROM LIST CLICK
     
     $(`body`).on(`click`, `[name="showCommentBlock"]`, function(e) {
@@ -168,20 +182,20 @@ import Render from './render.js';
         const text = $(this).prev().val();
         const postId = $(this).parent().next().data(`id`);
         if(text) {
-            currentRestInterraction.addCommentToPost(text, postId, `.posts`);
+            currentRestInterraction.addCommentToPost(text, postId, postsContSelector);
         };
     }); //COMMENT BUTTON CLICK
 
     $(`body`).on(`click`, `[name="deleteComment"]`, function(e) {
         e.preventDefault();
         const commentId = $(this).data(`id`);
-        currentRestInterraction.removePostComment(commentId, `.posts`);
+        currentRestInterraction.removePostComment(commentId, postsContSelector);
     }); //COMMENT BUTTON CLICK
 
     $(`body`).on(`click`, `[name="removePost"]`, function(e) {
         e.preventDefault();
         const postId = $(this).parent().data(`id`);
-        currentRestInterraction.removePost(postId, `.posts`);
+        currentRestInterraction.removePost(postId, postsContSelector);
     }); //REMOVE POST LINK CLICK
                                                     //PROFILE HBS
 
@@ -189,12 +203,17 @@ import Render from './render.js';
                                                     //SEARCH RESULTS HBS
     $(`body`).on(`click`, `[name="backToWall"]`, e => {
         e.preventDefault();
-        currentRestInterraction.init(`.posts`, `.right`);
+        currentRestInterraction.init(postsContSelector, rigthContSelector);
     }); //BACK TO WALL BUTTON CLICK     
                                                     //SEARCH RESULTS HBS
 
 
                                                     //PROFILESETTINGS HBS
+    
+    $(`body`).on(`click`, `[name="addProfilePhoto"]`, e => {
+        $(`#addProfilePhoto`).trigger(`click`);
+    });
+    
     $(`body`).on(`click`, `[name="updateProfile"]`, e => {
         e.preventDefault();
         let updateInfoFields = {
@@ -206,17 +225,17 @@ import Render from './render.js';
                                 went: $(`[name="went"]`).val(),
                                 buttonSelector: `[name="updateProfile"]`
                             }; 
-        currentRestInterraction.uploadPhoto(`[name="UploadForm[imageFile]"]`).then(photoURL => {
+        currentRestInterraction.uploadPhoto(`#addProfilePhoto`).then(photoURL => {
             updateInfoFields.photo = photoURL;
             currentRestInterraction.updateProfileInfo(updateInfoFields);
             setTimeout(() => {
-                currentRestInterraction.profileSettings(`.content`);
+                currentRestInterraction.profileSettings(contentContSelector);
             }, 2000);
         },
         () => {
             currentRestInterraction.updateProfileInfo(updateInfoFields);
             setTimeout(() => {
-                currentRestInterraction.profileSettings(`.content`);
+                currentRestInterraction.profileSettings(contentContSelector);
             }, 2000);
         });
         
@@ -256,8 +275,23 @@ import Render from './render.js';
     });//DELETE ALBUM LINK CLICK
 
     $(`body`).on(`click`, `[name="photoSmall"]`, function() {
+        
         const photoURL = $(this).children(`img`).attr(`src`);
-        functions.showModal(`photoModal`, `.wrapper`, `<img src="${photoURL}" alt="photo-big">`);
+        functions.showModal(`photoModal`, `.wrapper`, `<img id="photoImg" src="${photoURL}" alt="photo-big">`);
+
+        const docWidth = $(document).width();
+        const docHeight = $(document).height();
+        const img = document.getElementById(`photoImg`); 
+        const imgWidth = img.width;
+        const imgHeight = img.height;
+
+        const left = Math.floor(docWidth/2) - Math.floor(imgWidth/2);
+        const top = Math.floor(docHeight/2) - Math.floor(imgHeight/2);
+
+        $(`.photoModal`).css({
+                            top: top, 
+                            left: left,
+                        });          
     });//PHOTO SMALL DIV CLICK
 
     $(`body`).on(`click`, `.modalOverlay`, function(e) {

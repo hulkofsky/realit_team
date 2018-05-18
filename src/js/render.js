@@ -25,22 +25,13 @@ export default class Render{
     };//LOGIN PAGE
 
     profilePage(profileContext){
-        this.loadTemplate(`./src/views/profile.hbs`, this.wrapper(), profileContext);
+        this.loadTemplate(`./src/views/profile.hbs`, this.wrapper(), profileContext); 
     };//PROFILE PAGE
 
     userList(contSelector, context) {
         $(contSelector).append(`<aside class="right"></aside>`)
         const container = $(`.right`);
         this.loadTemplate(`./src/views/rightUserList.hbs`, container, context);
-        console.log($(`aside`).is(contSelector), `without time`);
-        setTimeout(() =>{
-            console.log($(`aside`).is(contSelector));
-            
-            
-        }, 0);
-
-        
-         
     }; //USER LIST
 
     registerPage(){

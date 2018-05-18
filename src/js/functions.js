@@ -29,8 +29,10 @@ export default class Functions {
     };//MESSAGE DELETE
 
     showModal(modalClassName, containerSelector, message){
-        $(containerSelector).append(`<div class="modalOverlay"></div>
-                                    <div class="${modalClassName}">${message}</div>`);
+        $(containerSelector).append(`<div class="modalOverlay">
+                                        <div class="${modalClassName}">${message}</div>
+                                    </div>`);
+                                    
     }; //SHOW MODAL
 
     deleteModal(modalClassName){

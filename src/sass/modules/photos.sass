@@ -20,17 +20,19 @@
     flex-wrap: wrap
     justify-content: flex-start
     .photo-item
-        
         margin: 5px
         box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.75)
         .photo-wrapper
             width: 200px
             height: 200px
+            overflow: hidden
+            display: flex
+            flex-direction: column
+            justify-content: center 
             &:hover
                 cursor: pointer
             .photo-img
                 width: 100%
-                height: 100%
         .photo-info
             margin: 10px 0
             display: flex

@@ -5,6 +5,7 @@ import Handlebars from '../../node_modules/handlebars/dist/handlebars.min.js';
 import Validation from './validation.js';
 import Functions from './functions.js';
 import Render from './render.js'
+import { setTimeout } from 'timers';
 
 export default class RestInterraction {
     wrapper(){
@@ -104,7 +105,6 @@ export default class RestInterraction {
                 },
 
                 success: data => {
-                    console.log(data);
                     render.newsPage(wallContSelector, data);
                 }
             });
@@ -298,7 +298,6 @@ export default class RestInterraction {
                 },
 
                 success: (data) => {
-                    console.log(data)
                     let context;
                     if(friendOrEnemy == 1){
                         if(localStorage.userId != userId) {
@@ -494,7 +493,10 @@ export default class RestInterraction {
                 },
 
                 success: (data) => {
-                    functions.showMessage(`success`, updateInfoFields.buttonSelector, `Your personal information has been updated succesfully!`);
+                    functions.showModal(`successModal`, this.wrapper(), `Your personal information has been updated succesfully!`);
+                    setTimeout(() => {
+                        functions.deleteModal(`successModal`);
+                    }, 2000)
                 }
             });
         } else {
@@ -531,7 +533,7 @@ export default class RestInterraction {
                         processData: false,
         
                         success: function(data) {
-                            resolve(data.link);
+                            resolve(data.link, data.id);
                         }
                     });
                 } else {
@@ -544,13 +546,13 @@ export default class RestInterraction {
     };//UPLOAD PHOTO
 
     addPhotoToPreview(containerSelector, inputFileSelector){
-        this.uploadPhoto(inputFileSelector).then((photoURL) => {
+        this.uploadPhoto(inputFileSelector).then((photoURL, photoId) => {
 
             if(!$(`div`).is(`.photos-preview`)) {
                 $(containerSelector).append(`<div class="photos-preview">
                                                 <div class="photo-wrapper">
                                                     <img class="photo" src="${photoURL}" alt="post-photo">
-                                                    <a class="remove-preview" href="#">Remove</a>
+                                                    <a class="remove-preview" data-id="${photoId}" href="#">Remove</a>
                                                 </div>                                
                                             </div>`);
             } else {
@@ -561,10 +563,6 @@ export default class RestInterraction {
             };
         });
     }; //ADD PHOTO TO POST
-
-    removePhotoFromPreview(removeLinkSelector){
-        $(removeLinkSelector).parent().remove();
-    };//REMOVE PHOTO FROM PREVIEW
 
     createPost(textFieldVal, photoPreviewSelector, wallContainerSelector){
         const functions = new Functions();
@@ -739,7 +737,6 @@ export default class RestInterraction {
                 },
 
                 success: data => {
-                    console.log(data);
                     render.albums(contSelector, data);
                 }
             });
@@ -858,6 +855,31 @@ export default class RestInterraction {
             this.redirectToLogin();
         };
     };//ADD PHOTO TO ALBUM
+
+    deletePhotoFromPreview(photoId, removeLinkSelector) {
+        const functions = new Functions();
+        const render = new Render();
+
+        if(functions.isSessionToken()) {
+            const sessionToken = functions.isSessionToken();
+            
+            $.ajax({
+                url: `http://restapi.fintegro.com/photos/${photoId}`, 
+                method: `DELETE`,
+                dataType: `json`,
+                
+                headers: {
+                    bearer: sessionToken
+                },
+
+                success: data => {
+                    $(removeLinkSelector).parent().remove();
+                }
+            });
+        } else {
+            this.redirectToLogin();
+        };
+    }; //DELETE PHOTO FROM PREVIEW
 
     deletePhotoFromAbum(photoId, albumId, contSelector){
         const functions = new Functions();

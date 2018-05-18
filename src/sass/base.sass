@@ -42,12 +42,11 @@ button
 	margin-bottom: 10px
 	border-radius: 3px
 
-.modalOverlay
+.modalOverlay,.photoOverlay
 	width: 100%
 	height: 100%
 	position: fixed
-	background-color: #000000
-	opacity: .5
+	background-color: rgba(0,0,0,.5)
 	top: 0
 	left: 0
 
@@ -66,11 +65,44 @@ button
 
 .photoModal
 	position: absolute
-	top: 50px
-	left: 50px
 	box-shadow: 0px 0px 5px 5px rgba(255,255,255,0.75)
 
 .successModal, .success
 	color: green
 	border-color: green
+
+
+@media screen and (max-width: 855px)
+	.content
+		flex-direction: column !important
+		.left,.wall,.right
+			width: 100% !important
+		.wall
+			margin: 0
+			margin: 10px 0
+		.right
+			.friends
+				display: flex
+				flex-direction: row
+				justify-content: center
+				.list:first-child
+					border-right: 1px solid #dfdfdf
+
+@media screen and (max-width: 540px)
+	.friends
+		flex-direction: column !important
+		.list
+			border: none
+
+@media screen and (max-width: 650px)
+	.header-nav
+		display: flex
+		flex-direction: row
+		justify-content: space-between
+		.menu-button
+			display: block !important
+		.nav-ul
+			display: none
+		
+	
 

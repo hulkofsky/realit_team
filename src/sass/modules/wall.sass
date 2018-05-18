@@ -23,10 +23,11 @@
                 border-radius: 50%
                 background-color: #fff
                 margin-right: 5px
+                overflow: hidden
                 .user-photo
                     width: 100%
-                    height: 100%
-                    border-radius: 50%
+                    min-height: 100%
+
             .post-username
                 color: #3097D1
                 text-decoration: none
@@ -41,7 +42,7 @@
         margin-top: -40px
         margin-bottom: 6px
         .text
-            margin: 0
+            
         .media
             display: flex
             flex-direction: row
@@ -99,6 +100,7 @@
                 padding-bottom: 5px
                 padding-top: 5px
                 border-top: 1px solid #dfdfdf
+                overflow: hidden
                 .user
                     display: flex
                     flex-direction: row
@@ -111,11 +113,11 @@
                         width: 40px
                         height: 40px
                         margin-right: 5px
-
+                        overflow: hidden
                         .user-photo
                             width: 100%
-                            height: 100%
-                            border-radius: 50%
+                            min-height: 100%
+
                     .user-info
                         min-width: 75px
                         .username
@@ -124,5 +126,9 @@
                             font-size: 14px
                 .text
                     margin-top: 3px
-        
+                    max-width: 60%
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    
+
                     
