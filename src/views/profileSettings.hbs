@@ -3,8 +3,8 @@
         <div class="photo-wrapper">
             <img class="user-photo" src="{{#if profile.photo}}{{profile.photo}}{{else}}../img/default-user.jpg{{/if}}" alt="user_photo">
         </div>
-        <p class="username">{{profile.firstName}} {{profile.lastName}}</p>
-        <p class="user-quote">{{profile.quote}}</p>
+        <p class="username">{{#if profile.firstName}}{{profile.firstName}}{{else}}Firstname {{/if}}{{#if profile.firstName}}{{profile.lastName}}{{else}}Lastname{{/if}}</p>
+        <p class="user-quote">{{#if profile.quote}}{{profile.quote}}{{else}}No comments...{{/if}}</p>
     </div>
     {{!-- tabs --}}
     <div class="tabs"> 

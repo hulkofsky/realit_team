@@ -73,36 +73,43 @@ button
 
 
 @media screen and (max-width: 855px)
-	.content
-		flex-direction: column !important
-		.left,.wall,.right
-			width: 100% !important
-		.wall
-			margin: 0
-			margin: 10px 0
-		.right
-			.friends
-				display: flex
-				flex-direction: row
-				justify-content: center
-				.list:first-child
-					border-right: 1px solid #dfdfdf
+	.wrapper
+		.content
+			flex-direction: column
+			.left,.wall,.right
+				width: 100%
+			.wall
+				margin: 0
+				margin: 10px 0
+			.right
+				.friends
+					display: flex
+					flex-direction: row
+					justify-content: center
+					.list:first-child
+						border-right: 1px solid #dfdfdf
 
 @media screen and (max-width: 540px)
-	.friends
-		flex-direction: column !important
-		.list
-			border: none
+	.wrapper
+		.content
+			.right
+				.friends
+					flex-direction: column
+					.list
+						border: none
 
 @media screen and (max-width: 650px)
-	.header-nav
-		display: flex
-		flex-direction: row
-		justify-content: space-between
-		.menu-button
-			display: block !important
-		.nav-ul
-			display: none
+	.wrapper
+		.header-nav
+			display: flex
+			flex-direction: row
+			justify-content: space-between
+			.menu-button
+				display: block
+			.nav-ul
+				display: none
+			.nav-ul.menu-open
+				display: block
 		
 	
 
